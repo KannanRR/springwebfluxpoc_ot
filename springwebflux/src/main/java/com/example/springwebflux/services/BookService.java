@@ -1,5 +1,6 @@
 package com.example.springwebflux.services;
 
+import com.example.springwebflux.CustomExceptions.ResourceNotFoundException;
 import com.example.springwebflux.Repository.BookRepository;
 import com.example.springwebflux.models.Book;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class BookService {
     private final BookRepository bookRepository;
 
@@ -21,8 +23,13 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+
     public Mono<Book> getBookById(Long id) {
-        return bookRepository.findById(id).switchIfEmpty(Mono.error(new RuntimeException("Book Not Found")));
+        //return bookRepository.findById(id).switchIfEmpty(Mono.error(new ResourceNotFoundException("Book Not Found for ")));
+
+        return bookRepository.findById(id).switchIfEmpty(Mono.error(new ResourceNotFoundException("Book Not Found for " + id)));
+
+        //return Mono.error(new ResourceNotFoundException("Book Not Found for " + id));
     }
 
     public Mono<Book> createBook(String title, String author) {

@@ -4,10 +4,19 @@ type Book {
     author: String
 }
 
+type DummyDto {
+    userId : ID
+    id: Int
+    title: String
+    completed: String
+}
+
 type Query {
     getBooks: [Book]
     getBookById(id: ID!): Book
     testBooks : [Book]
+    thirdApiCall: DummyDto
+    restApiCall: Int
 }
 
 type Mutation {
